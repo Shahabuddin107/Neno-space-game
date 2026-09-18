@@ -18,20 +18,19 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      height: 100vh;
+      width: 100vw;
       overflow: hidden;
+      font-family: sans-serif;
       color: #fff;
     }
     #game-container {
       position: relative;
-      width: 100vw;
-      max-width: 450px;
-      height: 100vh;
-      max-height: 800px;
-      box-shadow: 0 0 30px rgba(0, 243, 255, 0.25);
-      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      max-width: 480px;
       background: #090a1a;
+      overflow: hidden;
     }
     canvas {
       display: block;
@@ -40,41 +39,52 @@
     }
     .ui-overlay {
       position: absolute;
-      top: 15px;
-      left: 15px;
-      right: 15px;
+      top: 12px;
+      left: 12px;
+      right: 12px;
       display: flex;
       justify-content: space-between;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: bold;
-      letter-spacing: 1px;
       pointer-events: none;
       text-shadow: 0 0 8px #00f3ff;
       z-index: 10;
     }
-    .level-badge {
-      color: #ffe600;
-      text-shadow: 0 0 10px #ffe600;
-    }
-    #level-up-banner {
+    #speed-alert {
       position: absolute;
-      top: 30%;
+      top: 25%;
       left: 0;
       right: 0;
       text-align: center;
-      font-size: 28px;
-      font-weight: 900;
-      color: #ffe600;
-      text-shadow: 0 0 20px #ffe600, 0 0 40px #ff0055;
+      font-size: 20px;
+      font-weight: bold;
+      color: #ff0055;
+      text-shadow: 0 0 15px #ff0055;
       opacity: 0;
-      transform: scale(0.5);
-      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: 0.3s;
+      pointer-events: none;
+      z-index: 25;
+    }
+    #speed-alert.show {
+      opacity: 1;
+    }
+    #level-up-banner {
+      position: absolute;
+      top: 32%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #ffe600;
+      text-shadow: 0 0 20px #ffe600;
+      opacity: 0;
+      transition: 0.3s;
       pointer-events: none;
       z-index: 25;
     }
     #level-up-banner.show {
       opacity: 1;
-      transform: scale(1.1);
     }
     #game-over-screen {
       position: absolute;
@@ -84,94 +94,45 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(6px);
       z-index: 30;
       padding: 20px;
       text-align: center;
     }
     #game-over-screen h1 {
-      font-size: 26px;
+      font-size: 24px;
       color: #ff0055;
-      text-shadow: 0 0 15px #ff0055;
       margin-bottom: 8px;
     }
     #stats-box {
       font-size: 15px;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       color: #00f3ff;
-      line-height: 1.5;
     }
-    /* Surprise Gift Box Section */
     #gift-section {
-      margin: 10px 0 18px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      margin: 10px 0;
+      cursor: pointer;
     }
     #mystery-box {
-      font-size: 55px;
-      cursor: pointer;
-      display: inline-block;
-      animation: bounce 0.9s infinite alternate cubic-bezier(0.5, 0.05, 1, 0.5);
-      filter: drop-shadow(0 0 18px #ffe600);
-      transition: transform 0.2s;
-    }
-    #mystery-box:active {
-      transform: scale(0.85);
-    }
-    @keyframes bounce {
-      0% { transform: translateY(0) scale(1); }
-      100% { transform: translateY(-16px) scale(1.08); }
-    }
-    #gift-hint {
-      font-size: 13px;
-      font-weight: bold;
-      color: #ffe600;
-      text-shadow: 0 0 8px #ffe600;
-      margin-top: 6px;
-      letter-spacing: 0.5px;
+      font-size: 52px;
     }
     #reward-card {
       display: none;
-      background: rgba(255, 230, 0, 0.12);
-      border: 2px solid #ffe600;
-      box-shadow: 0 0 25px rgba(255, 230, 0, 0.4);
-      border-radius: 16px;
-      padding: 12px 18px;
-      margin-bottom: 16px;
-      max-width: 90%;
-      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    @keyframes popIn {
-      0% { transform: scale(0.4); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    #reward-title {
-      font-size: 17px;
-      font-weight: 900;
-      color: #ffe600;
-      margin-bottom: 4px;
-    }
-    #reward-desc {
-      font-size: 13px;
-      color: #ffffff;
-      font-style: italic;
+      background: rgba(255, 230, 0, 0.15);
+      border: 1px solid #ffe600;
+      border-radius: 12px;
+      padding: 10px 15px;
+      margin-bottom: 14px;
     }
     #restart-btn {
-      padding: 12px 34px;
-      font-size: 17px;
+      padding: 12px 30px;
+      font-size: 16px;
       font-weight: bold;
       color: #fff;
       background: transparent;
       border: 2px solid #00f3ff;
-      border-radius: 30px;
+      border-radius: 25px;
       cursor: pointer;
-      text-shadow: 0 0 8px #00f3ff;
-      box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
-    }
-    #restart-btn:active {
-      background: #00f3ff;
-      color: #05050f;
     }
   </style>
 </head>
@@ -180,10 +141,11 @@
   <div id="game-container">
     <div class="ui-overlay">
       <div>SCORE: <span id="score-val">0</span></div>
-      <div class="level-badge">LVL: <span id="level-val">1</span>/1000</div>
-      <div>HIGH: <span id="high-score-val">0</span></div>
+      <div style="color:#ffd700">🟡 <span id="coins-val">0</span></div>
+      <div style="color:#ffe600">LVL: <span id="level-val">1</span>/1000</div>
     </div>
 
+    <div id="speed-alert">⚡ SPEED BOOST! ⚡</div>
     <div id="level-up-banner">LEVEL UP!</div>
 
     <canvas id="gameCanvas"></canvas>
@@ -191,19 +153,19 @@
     <div id="game-over-screen">
       <h1>SYSTEM COMPROMISED</h1>
       <div id="stats-box">
-        Level Reached: <span id="final-level">1</span>/1000<br/>
-        Final Score: <span id="final-score">0</span>
+        Level: <span id="final-level">1</span><br/>
+        Coins: <span id="final-coins">0</span> 🟡<br/>
+        Score: <span id="final-score">0</span>
       </div>
 
-      <!-- Surprise Gift Box Area -->
       <div id="gift-section">
         <div id="mystery-box">🎁</div>
-        <div id="gift-hint">👉 TAP TO UNBOX MYSTERY GIFT! 👈</div>
+        <div style="color:#ffe600; font-size:12px; margin-top:4px;">👉 TAP GIFT BOX 👈</div>
       </div>
 
       <div id="reward-card">
-        <div id="reward-title">⚡ HYPER-BLASTER UNLOCKED!</div>
-        <div id="reward-desc">+25% Laser Fire Rate for next battle!</div>
+        <div id="reward-title" style="color:#ffe600; font-weight:bold; font-size:15px;"></div>
+        <div id="reward-desc" style="font-size:12px; margin-top:3px;"></div>
       </div>
 
       <button id="restart-btn">PLAY AGAIN</button>
@@ -215,49 +177,48 @@
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    function resizeCanvas() {
-      canvas.width = container.clientWidth;
-      canvas.height = container.clientHeight;
+    function fitCanvas() {
+      canvas.width = container.clientWidth || window.innerWidth;
+      canvas.height = container.clientHeight || window.innerHeight;
     }
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+    fitCanvas();
+    window.addEventListener("resize", fitCanvas);
 
     const scoreVal = document.getElementById("score-val");
+    const coinsVal = document.getElementById("coins-val");
     const levelVal = document.getElementById("level-val");
-    const highScoreVal = document.getElementById("high-score-val");
     const finalScoreVal = document.getElementById("final-score");
     const finalLevelVal = document.getElementById("final-level");
+    const finalCoinsVal = document.getElementById("final-coins");
     const gameOverScreen = document.getElementById("game-over-screen");
     const restartBtn = document.getElementById("restart-btn");
     const levelUpBanner = document.getElementById("level-up-banner");
-
-    // Surprise Gift Elements
+    const speedAlert = document.getElementById("speed-alert");
     const giftSection = document.getElementById("gift-section");
-    const mysteryBox = document.getElementById("mystery-box");
-    const giftHint = document.getElementById("gift-hint");
     const rewardCard = document.getElementById("reward-card");
     const rewardTitle = document.getElementById("reward-title");
     const rewardDesc = document.getElementById("reward-desc");
 
     let score = 0;
+    let coins = 0;
     let level = 1;
-    let highScore = localStorage.getItem("neon_high_score") || 0;
-    highScoreVal.innerText = highScore;
-
     let isGameOver = false;
     let animationId;
     let frames = 0;
-    let fireCooldown = 180; // Can be upgraded by gifts
+    let fireCooldown = 180;
+    let gameStartTime = Date.now();
+    let speedAlertTriggered = false;
 
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let audioCtx = null;
     function playSound(freq, duration, type = "sine") {
       try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === "suspended") audioCtx.resume();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = type;
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + duration);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
@@ -266,27 +227,16 @@
       } catch (e) {}
     }
 
-    function playVictoryMelody() {
-      try {
-        [523, 659, 784, 1046].forEach((f, idx) => {
-          setTimeout(() => playSound(f, 0.22, "triangle"), idx * 130);
-        });
-      } catch (e) {}
-    }
-
     const player = {
-      width: 44,
-      height: 44,
-      x: canvas.width / 2 - 22,
-      y: canvas.height - 85,
-      speed: 7,
-      dx: 0,
+      width: 42,
+      height: 42,
+      x: canvas.width / 2 - 21,
+      y: canvas.height - 80,
       draw() {
         ctx.save();
-        ctx.shadowBlur = 18;
-        ctx.shadowColor = "#00f3ff";
         ctx.fillStyle = "#00f3ff";
-
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = "#00f3ff";
         ctx.beginPath();
         ctx.moveTo(this.x + this.width / 2, this.y);
         ctx.lineTo(this.x + this.width, this.y + this.height);
@@ -295,30 +245,23 @@
         ctx.closePath();
         ctx.fill();
         ctx.restore();
-      },
-      update() {
-        this.x += this.dx;
-        if (this.x < 5) this.x = 5;
-        if (this.x + this.width > canvas.width - 5) this.x = canvas.width - this.width - 5;
       }
     };
 
     const lasers = [];
     const enemies = [];
     const particles = [];
-    const confetti = [];
+    const surpriseCoins = [];
 
     class Laser {
       constructor(x, y) {
         this.x = x;
         this.y = y;
         this.radius = 3.5;
-        this.speed = 11;
+        this.speed = 10;
       }
       draw() {
         ctx.save();
-        ctx.shadowBlur = 12;
-        ctx.shadowColor = "#ffe600";
         ctx.fillStyle = "#ffe600";
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
@@ -330,19 +273,38 @@
       }
     }
 
-    class Enemy {
-      constructor() {
-        this.radius = Math.random() * 10 + 15;
-        this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
-        this.y = -this.radius;
-        const speedBonus = Math.min(level * 0.022, 6.5);
-        this.speed = Math.random() * 1.8 + 2.0 + speedBonus;
-        this.color = Math.random() > 0.4 ? "#ff0055" : (Math.random() > 0.5 ? "#ff7700" : "#a855f7");
+    class SurpriseCoin {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.radius = 8;
+        this.speed = 2.2;
       }
       draw() {
         ctx.save();
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = this.color;
+        ctx.fillStyle = "#ffd700";
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      update() {
+        this.y += this.speed;
+      }
+    }
+
+    class Enemy {
+      constructor() {
+        this.radius = Math.random() * 8 + 14;
+        this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
+        this.y = -this.radius;
+        const elapsed = (Date.now() - gameStartTime) / 1000;
+        const boost = elapsed > 10 ? 2.5 : 0;
+        this.speed = Math.random() * 1.5 + 2.0 + boost + Math.min(level * 0.02, 5.0);
+        this.color = Math.random() > 0.5 ? "#ff0055" : "#ff7700";
+      }
+      draw() {
+        ctx.save();
         ctx.strokeStyle = this.color;
         ctx.lineWidth = 3;
         ctx.beginPath();
@@ -359,12 +321,10 @@
       constructor(x, y, color) {
         this.x = x;
         this.y = y;
-        this.radius = Math.random() * 2.5 + 1;
+        this.radius = Math.random() * 2 + 1;
         this.color = color;
-        this.velocity = {
-          x: (Math.random() - 0.5) * 6,
-          y: (Math.random() - 0.5) * 6
-        };
+        this.vx = (Math.random() - 0.5) * 5;
+        this.vy = (Math.random() - 0.5) * 5;
         this.alpha = 1;
       }
       draw() {
@@ -377,182 +337,103 @@
         ctx.restore();
       }
       update() {
-        this.x += this.velocity.x;
-        this.y += this.velocity.y;
-        this.alpha -= 0.022;
+        this.x += this.vx;
+        this.y += this.vy;
+        this.alpha -= 0.03;
       }
-    }
-
-    const stars = Array.from({ length: 45 }, () => ({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      size: Math.random() * 1.6,
-      speed: Math.random() * 1.2 + 0.6
-    }));
-
-    function drawStars() {
-      ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
-      stars.forEach(star => {
-        ctx.fillRect(star.x, star.y, star.size, star.size);
-        star.y += star.speed;
-        if (star.y > canvas.height) star.y = 0;
-      });
     }
 
     function fireLaser() {
       lasers.push(new Laser(player.x + player.width / 2, player.y));
-      playSound(780, 0.07, "square");
+      playSound(750, 0.06, "square");
     }
 
-    // Touch & Slide Controls
-    let touchFiringInterval = null;
-
-    function handleTouchMove(e) {
-      if (isGameOver) return;
-      const touch = e.touches[0];
+    let touchFiring = null;
+    function movePlayer(clientX) {
       const rect = canvas.getBoundingClientRect();
-      const touchX = touch.clientX - rect.left;
-      player.x = touchX - player.width / 2;
+      player.x = (clientX - rect.left) - player.width / 2;
       if (player.x < 5) player.x = 5;
       if (player.x + player.width > canvas.width - 5) player.x = canvas.width - player.width - 5;
     }
 
     canvas.addEventListener("touchstart", (e) => {
       e.preventDefault();
-      handleTouchMove(e);
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      movePlayer(e.touches[0].clientX);
       fireLaser();
-      if (!touchFiringInterval) {
-        touchFiringInterval = setInterval(fireLaser, fireCooldown);
-      }
+      if (!touchFiring) touchFiring = setInterval(fireLaser, fireCooldown);
     }, { passive: false });
 
     canvas.addEventListener("touchmove", (e) => {
       e.preventDefault();
-      handleTouchMove(e);
+      movePlayer(e.touches[0].clientX);
     }, { passive: false });
 
-    canvas.addEventListener("touchend", () => {
-      clearInterval(touchFiringInterval);
-      touchFiringInterval = null;
+    window.addEventListener("touchend", () => {
+      clearInterval(touchFiring);
+      touchFiring = null;
     });
-
-    // Keyboard Controls
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowLeft" || e.key === "a") player.dx = -player.speed;
-      if (e.key === "ArrowRight" || e.key === "d") player.dx = player.speed;
-      if (e.key === " " || e.key === "ArrowUp") fireLaser();
-    });
-
-    window.addEventListener("keyup", (e) => {
-      if (["ArrowLeft", "ArrowRight", "a", "d"].includes(e.key)) player.dx = 0;
-    });
-
-    function triggerExplosion(x, y, color) {
-      for (let i = 0; i < 16; i++) {
-        particles.push(new Particle(x, y, color));
-      }
-      playSound(120, 0.2, "sawtooth");
-    }
 
     function checkLevelProgress() {
-      const calculatedLevel = Math.min(1000, Math.floor(score / 40) + 1);
-      if (calculatedLevel > level) {
-        level = calculatedLevel;
+      const calcLvl = Math.min(1000, Math.floor(score / 40) + 1);
+      if (calcLvl > level) {
+        level = calcLvl;
         levelVal.innerText = level;
-        levelUpBanner.innerText = `LEVEL ${level} REACHED!`;
+        levelUpBanner.innerText = `LEVEL ${level}!`;
         levelUpBanner.classList.add("show");
-        playSound(950, 0.35, "triangle");
-        setTimeout(() => levelUpBanner.classList.remove("show"), 1200);
+        playSound(900, 0.25, "triangle");
+        setTimeout(() => levelUpBanner.classList.remove("show"), 1000);
       }
     }
 
-    // Surprise Gifts Collection
-    const surpriseGifts = [
-      {
-        title: "⚡ HYPER-BLASTER OVERCLOCK!",
-        desc: "Special Reward: Laser Firing Speed increased by 25% for your next run!",
-        apply: () => { fireCooldown = 135; }
-      },
-      {
-        title: "💎 CYBER GEM REWARD (+500 XP)!",
-        desc: "Bonus Bounty Collected: Starting next round with a +500 Headstart!",
-        apply: () => { score = 500; }
-      },
-      {
-        title: "🛡️ TITANIUM AURA SHIELD!",
-        desc: "Cosmic Blessing: Ship equipped with Titanium Neon Defense Aura!",
-        apply: () => {}
-      },
-      {
-        title: "👑 GALACTIC COMMANDER BADGE!",
-        desc: "Alien fleets bow down to your skills! Golden Neon Status unlocked!",
-        apply: () => {}
-      }
-    ];
-
-    function openSurpriseGift() {
-      playVictoryMelody();
+    function openGift() {
       giftSection.style.display = "none";
-      
-      const selected = surpriseGifts[Math.floor(Math.random() * surpriseGifts.length)];
-      rewardTitle.innerText = selected.title;
-      rewardDesc.innerText = selected.desc;
+      coins += 200;
+      coinsVal.innerText = coins;
+      rewardTitle.innerText = "🟡 +200 BONUS COINS!";
+      rewardDesc.innerText = "Vault reward unlocked for your next game!";
       rewardCard.style.display = "block";
-      selected.apply();
-
-      // Confetti burst on canvas
-      for (let i = 0; i < 50; i++) {
-        particles.push(new Particle(canvas.width / 2, canvas.height / 2, ["#ffe600", "#00f3ff", "#ff0055", "#00ff66"][Math.floor(Math.random() * 4)]));
-      }
+      playSound(1000, 0.3, "sine");
     }
-
-    mysteryBox.addEventListener("click", openSurpriseGift);
-    mysteryBox.addEventListener("touchend", (e) => {
+    giftSection.addEventListener("click", openGift);
+    giftSection.addEventListener("touchend", (e) => {
       e.preventDefault();
-      openSurpriseGift();
+      openGift();
     });
 
     function endGame() {
       isGameOver = true;
       cancelAnimationFrame(animationId);
-      clearInterval(touchFiringInterval);
-      touchFiringInterval = null;
-
+      clearInterval(touchFiring);
+      touchFiring = null;
       finalScoreVal.innerText = score;
       finalLevelVal.innerText = level;
-
-      // Reset Mystery Box state
-      giftSection.style.display = "flex";
+      finalCoinsVal.innerText = coins;
+      giftSection.style.display = "block";
       rewardCard.style.display = "none";
-
       gameOverScreen.style.display = "flex";
-      if (score > highScore) {
-        highScore = score;
-        localStorage.setItem("neon_high_score", highScore);
-        highScoreVal.innerText = highScore;
-      }
     }
 
     function resetGame() {
+      score = 0;
       level = 1;
-      scoreVal.innerText = score;
+      scoreVal.innerText = 0;
       levelVal.innerText = 1;
       lasers.length = 0;
       enemies.length = 0;
       particles.length = 0;
-      player.x = canvas.width / 2 - 22;
+      surpriseCoins.length = 0;
+      player.x = canvas.width / 2 - 21;
       isGameOver = false;
+      gameStartTime = Date.now();
+      speedAlertTriggered = false;
       gameOverScreen.style.display = "none";
       animate();
     }
 
-    restartBtn.addEventListener("click", () => {
-      score = 0;
-      resetGame();
-    });
+    restartBtn.addEventListener("click", resetGame);
     restartBtn.addEventListener("touchend", (e) => {
       e.preventDefault();
-      score = 0;
       resetGame();
     });
 
@@ -561,61 +442,70 @@
       animationId = requestAnimationFrame(animate);
       frames++;
 
-      ctx.fillStyle = "rgba(9, 10, 26, 0.32)";
+      ctx.fillStyle = "rgba(9, 10, 26, 0.35)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      drawStars();
-      player.update();
       player.draw();
 
-      lasers.forEach((laser, index) => {
+      const elapsed = (Date.now() - gameStartTime) / 1000;
+      if (elapsed > 10 && !speedAlertTriggered) {
+        speedAlertTriggered = true;
+        speedAlert.classList.add("show");
+        playSound(800, 0.3, "sawtooth");
+        setTimeout(() => speedAlert.classList.remove("show"), 1200);
+      }
+
+      lasers.forEach((laser, idx) => {
         laser.update();
         laser.draw();
-        if (laser.y < 0) lasers.splice(index, 1);
+        if (laser.y < 0) lasers.splice(idx, 1);
       });
 
-      const spawnRate = Math.max(16, 65 - Math.floor(level * 0.06));
-      if (frames % spawnRate === 0) {
+      surpriseCoins.forEach((coin, idx) => {
+        coin.update();
+        coin.draw();
+        if (Math.hypot(player.x + player.width / 2 - coin.x, player.y + player.height / 2 - coin.y) < coin.radius + player.width / 2) {
+          coins++;
+          score += 50;
+          coinsVal.innerText = coins;
+          scoreVal.innerText = score;
+          surpriseCoins.splice(idx, 1);
+          playSound(1100, 0.1, "triangle");
+        }
+        if (coin.y > canvas.height) surpriseCoins.splice(idx, 1);
+      });
+
+      const rate = elapsed > 10 ? 30 : 55;
+      if (frames % Math.max(16, rate - Math.floor(level * 0.05)) === 0) {
         enemies.push(new Enemy());
       }
 
-      enemies.forEach((enemy, eIndex) => {
+      enemies.forEach((enemy, eIdx) => {
         enemy.update();
         enemy.draw();
 
-        const distToPlayer = Math.hypot(
-          player.x + player.width / 2 - enemy.x,
-          player.y + player.height / 2 - enemy.y
-        );
-        if (distToPlayer < enemy.radius + player.width / 3) {
-          triggerExplosion(player.x, player.y, "#00f3ff");
+        if (Math.hypot(player.x + player.width / 2 - enemy.x, player.y + player.height / 2 - enemy.y) < enemy.radius + player.width / 3) {
           endGame();
         }
 
-        lasers.forEach((laser, lIndex) => {
-          const dist = Math.hypot(laser.x - enemy.x, laser.y - enemy.y);
-          if (dist < enemy.radius + laser.radius) {
-            triggerExplosion(enemy.x, enemy.y, enemy.color);
-            enemies.splice(eIndex, 1);
-            lasers.splice(lIndex, 1);
+        lasers.forEach((laser, lIdx) => {
+          if (Math.hypot(laser.x - enemy.x, laser.y - enemy.y) < enemy.radius + laser.radius) {
+            for (let i = 0; i < 10; i++) particles.push(new Particle(enemy.x, enemy.y, enemy.color));
+            if (Math.random() < 0.35) surpriseCoins.push(new SurpriseCoin(enemy.x, enemy.y));
+            enemies.splice(eIdx, 1);
+            lasers.splice(lIdx, 1);
             score += 10;
             scoreVal.innerText = score;
             checkLevelProgress();
           }
         });
 
-        if (enemy.y - enemy.radius > canvas.height) {
-          enemies.splice(eIndex, 1);
-        }
+        if (enemy.y - enemy.radius > canvas.height) enemies.splice(eIdx, 1);
       });
 
-      particles.forEach((p, index) => {
-        if (p.alpha <= 0) {
-          particles.splice(index, 1);
-        } else {
-          p.update();
-          p.draw();
-        }
+      particles.forEach((p, idx) => {
+        if (p.alpha <= 0) particles.splice(idx, 1);
+        else { p.update(); p.draw(); }
       });
     }
 
