@@ -10,6 +10,8 @@
       padding: 0;
       box-sizing: border-box;
       user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
     }
     body {
       background: #05050f;
@@ -23,13 +25,18 @@
     }
     #game-container {
       position: relative;
-      box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
-      border-radius: 12px;
+      width: 100vw;
+      max-width: 450px;
+      height: 100vh;
+      max-height: 800px;
+      box-shadow: 0 0 30px rgba(0, 243, 255, 0.25);
       overflow: hidden;
+      background: #090a1a;
     }
     canvas {
       display: block;
-      background: #090a1a;
+      width: 100%;
+      height: 100%;
     }
     .ui-overlay {
       position: absolute;
@@ -38,38 +45,121 @@
       right: 15px;
       display: flex;
       justify-content: space-between;
-      font-size: 18px;
+      font-size: 15px;
       font-weight: bold;
       letter-spacing: 1px;
       pointer-events: none;
       text-shadow: 0 0 8px #00f3ff;
       z-index: 10;
     }
+    .level-badge {
+      color: #ffe600;
+      text-shadow: 0 0 10px #ffe600;
+    }
+    #level-up-banner {
+      position: absolute;
+      top: 30%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 28px;
+      font-weight: 900;
+      color: #ffe600;
+      text-shadow: 0 0 20px #ffe600, 0 0 40px #ff0055;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+      z-index: 25;
+    }
+    #level-up-banner.show {
+      opacity: 1;
+      transform: scale(1.1);
+    }
     #game-over-screen {
       position: absolute;
       inset: 0;
-      background: rgba(5, 5, 15, 0.85);
+      background: rgba(5, 5, 15, 0.94);
       display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      backdrop-filter: blur(4px);
-      z-index: 20;
+      backdrop-filter: blur(8px);
+      z-index: 30;
+      padding: 20px;
+      text-align: center;
     }
     #game-over-screen h1 {
-      font-size: 36px;
+      font-size: 26px;
       color: #ff0055;
       text-shadow: 0 0 15px #ff0055;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
-    #game-over-screen p {
-      font-size: 20px;
-      margin-bottom: 25px;
+    #stats-box {
+      font-size: 15px;
+      margin-bottom: 15px;
       color: #00f3ff;
+      line-height: 1.5;
+    }
+    /* Surprise Gift Box Section */
+    #gift-section {
+      margin: 10px 0 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #mystery-box {
+      font-size: 55px;
+      cursor: pointer;
+      display: inline-block;
+      animation: bounce 0.9s infinite alternate cubic-bezier(0.5, 0.05, 1, 0.5);
+      filter: drop-shadow(0 0 18px #ffe600);
+      transition: transform 0.2s;
+    }
+    #mystery-box:active {
+      transform: scale(0.85);
+    }
+    @keyframes bounce {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-16px) scale(1.08); }
+    }
+    #gift-hint {
+      font-size: 13px;
+      font-weight: bold;
+      color: #ffe600;
+      text-shadow: 0 0 8px #ffe600;
+      margin-top: 6px;
+      letter-spacing: 0.5px;
+    }
+    #reward-card {
+      display: none;
+      background: rgba(255, 230, 0, 0.12);
+      border: 2px solid #ffe600;
+      box-shadow: 0 0 25px rgba(255, 230, 0, 0.4);
+      border-radius: 16px;
+      padding: 12px 18px;
+      margin-bottom: 16px;
+      max-width: 90%;
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.4); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    #reward-title {
+      font-size: 17px;
+      font-weight: 900;
+      color: #ffe600;
+      margin-bottom: 4px;
+    }
+    #reward-desc {
+      font-size: 13px;
+      color: #ffffff;
+      font-style: italic;
     }
     #restart-btn {
-      padding: 12px 28px;
-      font-size: 18px;
+      padding: 12px 34px;
+      font-size: 17px;
       font-weight: bold;
       color: #fff;
       background: transparent;
@@ -78,39 +168,10 @@
       cursor: pointer;
       text-shadow: 0 0 8px #00f3ff;
       box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
-      transition: 0.2s;
     }
-    #restart-btn:hover {
+    #restart-btn:active {
       background: #00f3ff;
       color: #05050f;
-      box-shadow: 0 0 25px #00f3ff;
-    }
-    #mobile-controls {
-      position: absolute;
-      bottom: 20px;
-      left: 0;
-      right: 0;
-      display: none;
-      justify-content: space-around;
-      padding: 0 20px;
-      z-index: 15;
-    }
-    .btn-touch {
-      width: 65px;
-      height: 65px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.08);
-      border: 2px solid rgba(0, 243, 255, 0.5);
-      color: #00f3ff;
-      font-size: 22px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    @media (max-width: 600px) {
-      #mobile-controls {
-        display: flex;
-      }
     }
   </style>
 </head>
@@ -119,41 +180,74 @@
   <div id="game-container">
     <div class="ui-overlay">
       <div>SCORE: <span id="score-val">0</span></div>
+      <div class="level-badge">LVL: <span id="level-val">1</span>/1000</div>
       <div>HIGH: <span id="high-score-val">0</span></div>
     </div>
 
-    <canvas id="gameCanvas" width="450" height="650"></canvas>
+    <div id="level-up-banner">LEVEL UP!</div>
+
+    <canvas id="gameCanvas"></canvas>
 
     <div id="game-over-screen">
       <h1>SYSTEM COMPROMISED</h1>
-      <p>Final Score: <span id="final-score">0</span></p>
-      <button id="restart-btn">PLAY AGAIN</button>
-    </div>
+      <div id="stats-box">
+        Level Reached: <span id="final-level">1</span>/1000<br/>
+        Final Score: <span id="final-score">0</span>
+      </div>
 
-    <div id="mobile-controls">
-      <button class="btn-touch" id="left-btn">◀</button>
-      <button class="btn-touch" id="fire-btn">⚡</button>
-      <button class="btn-touch" id="right-btn">▶</button>
+      <!-- Surprise Gift Box Area -->
+      <div id="gift-section">
+        <div id="mystery-box">🎁</div>
+        <div id="gift-hint">👉 TAP TO UNBOX MYSTERY GIFT! 👈</div>
+      </div>
+
+      <div id="reward-card">
+        <div id="reward-title">⚡ HYPER-BLASTER UNLOCKED!</div>
+        <div id="reward-desc">+25% Laser Fire Rate for next battle!</div>
+      </div>
+
+      <button id="restart-btn">PLAY AGAIN</button>
     </div>
   </div>
 
   <script>
+    const container = document.getElementById("game-container");
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
+    function resizeCanvas() {
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
     const scoreVal = document.getElementById("score-val");
+    const levelVal = document.getElementById("level-val");
     const highScoreVal = document.getElementById("high-score-val");
     const finalScoreVal = document.getElementById("final-score");
+    const finalLevelVal = document.getElementById("final-level");
     const gameOverScreen = document.getElementById("game-over-screen");
     const restartBtn = document.getElementById("restart-btn");
+    const levelUpBanner = document.getElementById("level-up-banner");
+
+    // Surprise Gift Elements
+    const giftSection = document.getElementById("gift-section");
+    const mysteryBox = document.getElementById("mystery-box");
+    const giftHint = document.getElementById("gift-hint");
+    const rewardCard = document.getElementById("reward-card");
+    const rewardTitle = document.getElementById("reward-title");
+    const rewardDesc = document.getElementById("reward-desc");
 
     let score = 0;
+    let level = 1;
     let highScore = localStorage.getItem("neon_high_score") || 0;
     highScoreVal.innerText = highScore;
 
     let isGameOver = false;
     let animationId;
     let frames = 0;
+    let fireCooldown = 180; // Can be upgraded by gifts
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSound(freq, duration, type = "sine") {
@@ -163,8 +257,8 @@
         const gain = audioCtx.createGain();
         osc.type = type;
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + duration);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start();
@@ -172,19 +266,27 @@
       } catch (e) {}
     }
 
+    function playVictoryMelody() {
+      try {
+        [523, 659, 784, 1046].forEach((f, idx) => {
+          setTimeout(() => playSound(f, 0.22, "triangle"), idx * 130);
+        });
+      } catch (e) {}
+    }
+
     const player = {
-      x: canvas.width / 2 - 20,
-      y: canvas.height - 70,
-      width: 40,
-      height: 40,
-      speed: 6,
+      width: 44,
+      height: 44,
+      x: canvas.width / 2 - 22,
+      y: canvas.height - 85,
+      speed: 7,
       dx: 0,
       draw() {
         ctx.save();
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = 18;
         ctx.shadowColor = "#00f3ff";
         ctx.fillStyle = "#00f3ff";
-        
+
         ctx.beginPath();
         ctx.moveTo(this.x + this.width / 2, this.y);
         ctx.lineTo(this.x + this.width, this.y + this.height);
@@ -196,25 +298,26 @@
       },
       update() {
         this.x += this.dx;
-        if (this.x < 10) this.x = 10;
-        if (this.x + this.width > canvas.width - 10) this.x = canvas.width - this.width - 10;
+        if (this.x < 5) this.x = 5;
+        if (this.x + this.width > canvas.width - 5) this.x = canvas.width - this.width - 5;
       }
     };
 
     const lasers = [];
     const enemies = [];
     const particles = [];
+    const confetti = [];
 
     class Laser {
       constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.radius = 3;
-        this.speed = 9;
+        this.radius = 3.5;
+        this.speed = 11;
       }
       draw() {
         ctx.save();
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 12;
         ctx.shadowColor = "#ffe600";
         ctx.fillStyle = "#ffe600";
         ctx.beginPath();
@@ -229,11 +332,12 @@
 
     class Enemy {
       constructor() {
-        this.radius = Math.random() * 12 + 14;
+        this.radius = Math.random() * 10 + 15;
         this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
         this.y = -this.radius;
-        this.speed = Math.random() * 2 + 2 + score * 0.04;
-        this.color = Math.random() > 0.5 ? "#ff0055" : "#ff5500";
+        const speedBonus = Math.min(level * 0.022, 6.5);
+        this.speed = Math.random() * 1.8 + 2.0 + speedBonus;
+        this.color = Math.random() > 0.4 ? "#ff0055" : (Math.random() > 0.5 ? "#ff7700" : "#a855f7");
       }
       draw() {
         ctx.save();
@@ -255,11 +359,11 @@
       constructor(x, y, color) {
         this.x = x;
         this.y = y;
-        this.radius = Math.random() * 2 + 1;
+        this.radius = Math.random() * 2.5 + 1;
         this.color = color;
         this.velocity = {
-          x: (Math.random() - 0.5) * 5,
-          y: (Math.random() - 0.5) * 5
+          x: (Math.random() - 0.5) * 6,
+          y: (Math.random() - 0.5) * 6
         };
         this.alpha = 1;
       }
@@ -275,15 +379,15 @@
       update() {
         this.x += this.velocity.x;
         this.y += this.velocity.y;
-        this.alpha -= 0.02;
+        this.alpha -= 0.022;
       }
     }
 
-    const stars = Array.from({ length: 40 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      size: Math.random() * 1.5,
-      speed: Math.random() * 1 + 0.5
+    const stars = Array.from({ length: 45 }, () => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      size: Math.random() * 1.6,
+      speed: Math.random() * 1.2 + 0.6
     }));
 
     function drawStars() {
@@ -297,9 +401,42 @@
 
     function fireLaser() {
       lasers.push(new Laser(player.x + player.width / 2, player.y));
-      playSound(750, 0.08, "square");
+      playSound(780, 0.07, "square");
     }
 
+    // Touch & Slide Controls
+    let touchFiringInterval = null;
+
+    function handleTouchMove(e) {
+      if (isGameOver) return;
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      const touchX = touch.clientX - rect.left;
+      player.x = touchX - player.width / 2;
+      if (player.x < 5) player.x = 5;
+      if (player.x + player.width > canvas.width - 5) player.x = canvas.width - player.width - 5;
+    }
+
+    canvas.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      handleTouchMove(e);
+      fireLaser();
+      if (!touchFiringInterval) {
+        touchFiringInterval = setInterval(fireLaser, fireCooldown);
+      }
+    }, { passive: false });
+
+    canvas.addEventListener("touchmove", (e) => {
+      e.preventDefault();
+      handleTouchMove(e);
+    }, { passive: false });
+
+    canvas.addEventListener("touchend", () => {
+      clearInterval(touchFiringInterval);
+      touchFiringInterval = null;
+    });
+
+    // Keyboard Controls
     window.addEventListener("keydown", (e) => {
       if (e.key === "ArrowLeft" || e.key === "a") player.dx = -player.speed;
       if (e.key === "ArrowRight" || e.key === "d") player.dx = player.speed;
@@ -310,27 +447,84 @@
       if (["ArrowLeft", "ArrowRight", "a", "d"].includes(e.key)) player.dx = 0;
     });
 
-    const leftBtn = document.getElementById("left-btn");
-    const rightBtn = document.getElementById("right-btn");
-    const fireBtn = document.getElementById("fire-btn");
-
-    leftBtn.addEventListener("touchstart", (e) => { e.preventDefault(); player.dx = -player.speed; });
-    leftBtn.addEventListener("touchend", () => player.dx = 0);
-    rightBtn.addEventListener("touchstart", (e) => { e.preventDefault(); player.dx = player.speed; });
-    rightBtn.addEventListener("touchend", () => player.dx = 0);
-    fireBtn.addEventListener("touchstart", (e) => { e.preventDefault(); fireLaser(); });
-
     function triggerExplosion(x, y, color) {
-      for (let i = 0; i < 14; i++) {
+      for (let i = 0; i < 16; i++) {
         particles.push(new Particle(x, y, color));
       }
       playSound(120, 0.2, "sawtooth");
     }
 
+    function checkLevelProgress() {
+      const calculatedLevel = Math.min(1000, Math.floor(score / 40) + 1);
+      if (calculatedLevel > level) {
+        level = calculatedLevel;
+        levelVal.innerText = level;
+        levelUpBanner.innerText = `LEVEL ${level} REACHED!`;
+        levelUpBanner.classList.add("show");
+        playSound(950, 0.35, "triangle");
+        setTimeout(() => levelUpBanner.classList.remove("show"), 1200);
+      }
+    }
+
+    // Surprise Gifts Collection
+    const surpriseGifts = [
+      {
+        title: "⚡ HYPER-BLASTER OVERCLOCK!",
+        desc: "Special Reward: Laser Firing Speed increased by 25% for your next run!",
+        apply: () => { fireCooldown = 135; }
+      },
+      {
+        title: "💎 CYBER GEM REWARD (+500 XP)!",
+        desc: "Bonus Bounty Collected: Starting next round with a +500 Headstart!",
+        apply: () => { score = 500; }
+      },
+      {
+        title: "🛡️ TITANIUM AURA SHIELD!",
+        desc: "Cosmic Blessing: Ship equipped with Titanium Neon Defense Aura!",
+        apply: () => {}
+      },
+      {
+        title: "👑 GALACTIC COMMANDER BADGE!",
+        desc: "Alien fleets bow down to your skills! Golden Neon Status unlocked!",
+        apply: () => {}
+      }
+    ];
+
+    function openSurpriseGift() {
+      playVictoryMelody();
+      giftSection.style.display = "none";
+      
+      const selected = surpriseGifts[Math.floor(Math.random() * surpriseGifts.length)];
+      rewardTitle.innerText = selected.title;
+      rewardDesc.innerText = selected.desc;
+      rewardCard.style.display = "block";
+      selected.apply();
+
+      // Confetti burst on canvas
+      for (let i = 0; i < 50; i++) {
+        particles.push(new Particle(canvas.width / 2, canvas.height / 2, ["#ffe600", "#00f3ff", "#ff0055", "#00ff66"][Math.floor(Math.random() * 4)]));
+      }
+    }
+
+    mysteryBox.addEventListener("click", openSurpriseGift);
+    mysteryBox.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      openSurpriseGift();
+    });
+
     function endGame() {
       isGameOver = true;
       cancelAnimationFrame(animationId);
+      clearInterval(touchFiringInterval);
+      touchFiringInterval = null;
+
       finalScoreVal.innerText = score;
+      finalLevelVal.innerText = level;
+
+      // Reset Mystery Box state
+      giftSection.style.display = "flex";
+      rewardCard.style.display = "none";
+
       gameOverScreen.style.display = "flex";
       if (score > highScore) {
         highScore = score;
@@ -340,25 +534,34 @@
     }
 
     function resetGame() {
-      score = 0;
-      scoreVal.innerText = 0;
+      level = 1;
+      scoreVal.innerText = score;
+      levelVal.innerText = 1;
       lasers.length = 0;
       enemies.length = 0;
       particles.length = 0;
-      player.x = canvas.width / 2 - 20;
+      player.x = canvas.width / 2 - 22;
       isGameOver = false;
       gameOverScreen.style.display = "none";
       animate();
     }
 
-    restartBtn.addEventListener("click", resetGame);
+    restartBtn.addEventListener("click", () => {
+      score = 0;
+      resetGame();
+    });
+    restartBtn.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      score = 0;
+      resetGame();
+    });
 
     function animate() {
       if (isGameOver) return;
       animationId = requestAnimationFrame(animate);
       frames++;
 
-      ctx.fillStyle = "rgba(9, 10, 26, 0.3)";
+      ctx.fillStyle = "rgba(9, 10, 26, 0.32)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       drawStars();
@@ -371,7 +574,8 @@
         if (laser.y < 0) lasers.splice(index, 1);
       });
 
-      if (frames % Math.max(30, 70 - Math.floor(score / 2)) === 0) {
+      const spawnRate = Math.max(16, 65 - Math.floor(level * 0.06));
+      if (frames % spawnRate === 0) {
         enemies.push(new Enemy());
       }
 
@@ -396,6 +600,7 @@
             lasers.splice(lIndex, 1);
             score += 10;
             scoreVal.innerText = score;
+            checkLevelProgress();
           }
         });
 
