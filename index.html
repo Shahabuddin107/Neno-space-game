@@ -45,7 +45,7 @@
       right: 15px;
       display: flex;
       justify-content: space-between;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: bold;
       letter-spacing: 1px;
       pointer-events: none;
@@ -56,13 +56,37 @@
       color: #ffe600;
       text-shadow: 0 0 10px #ffe600;
     }
-    #level-up-banner {
+    .coin-badge {
+      color: #ffd700;
+      text-shadow: 0 0 10px #ffd700;
+    }
+    #speed-alert {
       position: absolute;
-      top: 30%;
+      top: 25%;
       left: 0;
       right: 0;
       text-align: center;
-      font-size: 28px;
+      font-size: 22px;
+      font-weight: 900;
+      color: #ff0055;
+      text-shadow: 0 0 18px #ff0055;
+      opacity: 0;
+      transform: scale(0.6);
+      transition: all 0.35s ease;
+      pointer-events: none;
+      z-index: 25;
+    }
+    #speed-alert.show {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+    #level-up-banner {
+      position: absolute;
+      top: 32%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 26px;
       font-weight: 900;
       color: #ffe600;
       text-shadow: 0 0 20px #ffe600, 0 0 40px #ff0055;
@@ -97,23 +121,22 @@
     }
     #stats-box {
       font-size: 15px;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       color: #00f3ff;
       line-height: 1.5;
     }
-    /* Surprise Gift Box Section */
     #gift-section {
-      margin: 10px 0 18px;
+      margin: 8px 0 14px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
     #mystery-box {
-      font-size: 55px;
+      font-size: 58px;
       cursor: pointer;
       display: inline-block;
       animation: bounce 0.9s infinite alternate cubic-bezier(0.5, 0.05, 1, 0.5);
-      filter: drop-shadow(0 0 18px #ffe600);
+      filter: drop-shadow(0 0 20px #ffe600);
       transition: transform 0.2s;
     }
     #mystery-box:active {
@@ -129,7 +152,6 @@
       color: #ffe600;
       text-shadow: 0 0 8px #ffe600;
       margin-top: 6px;
-      letter-spacing: 0.5px;
     }
     #reward-card {
       display: none;
@@ -180,10 +202,11 @@
   <div id="game-container">
     <div class="ui-overlay">
       <div>SCORE: <span id="score-val">0</span></div>
+      <div class="coin-badge">🟡 <span id="coins-val">0</span></div>
       <div class="level-badge">LVL: <span id="level-val">1</span>/1000</div>
-      <div>HIGH: <span id="high-score-val">0</span></div>
     </div>
 
+    <div id="speed-alert">⚡ SPEED BOOST ACTIVATED! ⚡</div>
     <div id="level-up-banner">LEVEL UP!</div>
 
     <canvas id="gameCanvas"></canvas>
@@ -192,18 +215,18 @@
       <h1>SYSTEM COMPROMISED</h1>
       <div id="stats-box">
         Level Reached: <span id="final-level">1</span>/1000<br/>
+        Surprise Coins: <span id="final-coins">0</span> 🟡<br/>
         Final Score: <span id="final-score">0</span>
       </div>
 
-      <!-- Surprise Gift Box Area -->
       <div id="gift-section">
         <div id="mystery-box">🎁</div>
-        <div id="gift-hint">👉 TAP TO UNBOX MYSTERY GIFT! 👈</div>
+        <div id="gift-hint">👉 TAP TO UNBOX SURPRISE! 👈</div>
       </div>
 
       <div id="reward-card">
-        <div id="reward-title">⚡ HYPER-BLASTER UNLOCKED!</div>
-        <div id="reward-desc">+25% Laser Fire Rate for next battle!</div>
+        <div id="reward-title">⚡ SURPRISE UNLOCKED!</div>
+        <div id="reward-desc">Enjoy your reward!</div>
       </div>
 
       <button id="restart-btn">PLAY AGAIN</button>
@@ -223,31 +246,31 @@
     window.addEventListener("resize", resizeCanvas);
 
     const scoreVal = document.getElementById("score-val");
+    const coinsVal = document.getElementById("coins-val");
     const levelVal = document.getElementById("level-val");
-    const highScoreVal = document.getElementById("high-score-val");
     const finalScoreVal = document.getElementById("final-score");
     const finalLevelVal = document.getElementById("final-level");
+    const finalCoinsVal = document.getElementById("final-coins");
     const gameOverScreen = document.getElementById("game-over-screen");
     const restartBtn = document.getElementById("restart-btn");
     const levelUpBanner = document.getElementById("level-up-banner");
+    const speedAlert = document.getElementById("speed-alert");
 
-    // Surprise Gift Elements
     const giftSection = document.getElementById("gift-section");
     const mysteryBox = document.getElementById("mystery-box");
-    const giftHint = document.getElementById("gift-hint");
     const rewardCard = document.getElementById("reward-card");
     const rewardTitle = document.getElementById("reward-title");
     const rewardDesc = document.getElementById("reward-desc");
 
     let score = 0;
+    let coins = 0;
     let level = 1;
-    let highScore = localStorage.getItem("neon_high_score") || 0;
-    highScoreVal.innerText = highScore;
-
     let isGameOver = false;
     let animationId;
     let frames = 0;
-    let fireCooldown = 180; // Can be upgraded by gifts
+    let fireCooldown = 180;
+    let gameStartTime = Date.now();
+    let speedAlertTriggered = false;
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSound(freq, duration, type = "sine") {
@@ -266,12 +289,9 @@
       } catch (e) {}
     }
 
-    function playVictoryMelody() {
-      try {
-        [523, 659, 784, 1046].forEach((f, idx) => {
-          setTimeout(() => playSound(f, 0.22, "triangle"), idx * 130);
-        });
-      } catch (e) {}
+    function playCoinSound() {
+      playSound(987, 0.08, "triangle");
+      setTimeout(() => playSound(1318, 0.12, "sine"), 60);
     }
 
     const player = {
@@ -286,7 +306,6 @@
         ctx.shadowBlur = 18;
         ctx.shadowColor = "#00f3ff";
         ctx.fillStyle = "#00f3ff";
-
         ctx.beginPath();
         ctx.moveTo(this.x + this.width / 2, this.y);
         ctx.lineTo(this.x + this.width, this.y + this.height);
@@ -306,7 +325,7 @@
     const lasers = [];
     const enemies = [];
     const particles = [];
-    const confetti = [];
+    const surpriseCoins = [];
 
     class Laser {
       constructor(x, y) {
@@ -330,13 +349,43 @@
       }
     }
 
+    class SurpriseCoin {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.radius = 8;
+        this.speed = 2.4;
+      }
+      draw() {
+        ctx.save();
+        ctx.shadowBlur = 14;
+        ctx.shadowColor = "#ffd700";
+        ctx.fillStyle = "#ffd700";
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.restore();
+      }
+      update() {
+        this.y += this.speed;
+      }
+    }
+
     class Enemy {
       constructor() {
         this.radius = Math.random() * 10 + 15;
         this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
         this.y = -this.radius;
-        const speedBonus = Math.min(level * 0.022, 6.5);
-        this.speed = Math.random() * 1.8 + 2.0 + speedBonus;
+
+        // 10 Second rule: agar 10s ho gaye to extra speed
+        const elapsedSec = (Date.now() - gameStartTime) / 1000;
+        const tenSecBonus = elapsedSec > 10 ? 2.5 : 0;
+        const levelBonus = Math.min(level * 0.02, 6.0);
+
+        this.speed = Math.random() * 1.6 + 2.0 + tenSecBonus + levelBonus;
         this.color = Math.random() > 0.4 ? "#ff0055" : (Math.random() > 0.5 ? "#ff7700" : "#a855f7");
       }
       draw() {
@@ -379,7 +428,7 @@
       update() {
         this.x += this.velocity.x;
         this.y += this.velocity.y;
-        this.alpha -= 0.022;
+        this.alpha -= 0.025;
       }
     }
 
@@ -404,9 +453,8 @@
       playSound(780, 0.07, "square");
     }
 
-    // Touch & Slide Controls
+    // Touch & Drag Controls
     let touchFiringInterval = null;
-
     function handleTouchMove(e) {
       if (isGameOver) return;
       const touch = e.touches[0];
@@ -436,7 +484,6 @@
       touchFiringInterval = null;
     });
 
-    // Keyboard Controls
     window.addEventListener("keydown", (e) => {
       if (e.key === "ArrowLeft" || e.key === "a") player.dx = -player.speed;
       if (e.key === "ArrowRight" || e.key === "d") player.dx = player.speed;
@@ -448,7 +495,7 @@
     });
 
     function triggerExplosion(x, y, color) {
-      for (let i = 0; i < 16; i++) {
+      for (let i = 0; i < 15; i++) {
         particles.push(new Particle(x, y, color));
       }
       playSound(120, 0.2, "sawtooth");
@@ -466,43 +513,41 @@
       }
     }
 
-    // Surprise Gifts Collection
     const surpriseGifts = [
       {
-        title: "⚡ HYPER-BLASTER OVERCLOCK!",
-        desc: "Special Reward: Laser Firing Speed increased by 25% for your next run!",
-        apply: () => { fireCooldown = 135; }
+        title: "🟡 500 SURPRISE COINS CASH-IN!",
+        desc: "Special Vault Opened: +500 Coins added directly to your treasury!",
+        apply: () => { coins += 500; coinsVal.innerText = coins; }
       },
       {
-        title: "💎 CYBER GEM REWARD (+500 XP)!",
-        desc: "Bonus Bounty Collected: Starting next round with a +500 Headstart!",
-        apply: () => { score = 500; }
+        title: "⚡ ULTRA HYPER-BLASTER (+35% SPEED)!",
+        desc: "Alien Overdrive: Continuous fast-shooting unlocked for next run!",
+        apply: () => { fireCooldown = 115; }
       },
       {
-        title: "🛡️ TITANIUM AURA SHIELD!",
-        desc: "Cosmic Blessing: Ship equipped with Titanium Neon Defense Aura!",
+        title: "🛡️ MYSTIC TITANIUM SHIELD!",
+        desc: "Space Guardian blessing: Next run fortified with glowing golden energy aura!",
         apply: () => {}
       },
       {
-        title: "👑 GALACTIC COMMANDER BADGE!",
-        desc: "Alien fleets bow down to your skills! Golden Neon Status unlocked!",
+        title: "🚀 GALAXY ACE STAR BADGE!",
+        desc: "Special achievement: You are now in the top 1% galaxy pilots!",
         apply: () => {}
       }
     ];
 
     function openSurpriseGift() {
-      playVictoryMelody();
+      playSound(1046, 0.35, "sine");
       giftSection.style.display = "none";
-      
+
       const selected = surpriseGifts[Math.floor(Math.random() * surpriseGifts.length)];
       rewardTitle.innerText = selected.title;
       rewardDesc.innerText = selected.desc;
       rewardCard.style.display = "block";
       selected.apply();
 
-      // Confetti burst on canvas
       for (let i = 0; i < 50; i++) {
-        particles.push(new Particle(canvas.width / 2, canvas.height / 2, ["#ffe600", "#00f3ff", "#ff0055", "#00ff66"][Math.floor(Math.random() * 4)]));
+        particles.push(new Particle(canvas.width / 2, canvas.height / 2, ["#ffd700", "#00f3ff", "#ff0055", "#00ff66"][Math.floor(Math.random() * 4)]));
       }
     }
 
@@ -520,39 +565,33 @@
 
       finalScoreVal.innerText = score;
       finalLevelVal.innerText = level;
+      finalCoinsVal.innerText = coins;
 
-      // Reset Mystery Box state
       giftSection.style.display = "flex";
       rewardCard.style.display = "none";
-
       gameOverScreen.style.display = "flex";
-      if (score > highScore) {
-        highScore = score;
-        localStorage.setItem("neon_high_score", highScore);
-        highScoreVal.innerText = highScore;
-      }
     }
 
     function resetGame() {
+      score = 0;
       level = 1;
-      scoreVal.innerText = score;
+      scoreVal.innerText = 0;
       levelVal.innerText = 1;
       lasers.length = 0;
       enemies.length = 0;
       particles.length = 0;
+      surpriseCoins.length = 0;
       player.x = canvas.width / 2 - 22;
       isGameOver = false;
+      gameStartTime = Date.now();
+      speedAlertTriggered = false;
       gameOverScreen.style.display = "none";
       animate();
     }
 
-    restartBtn.addEventListener("click", () => {
-      score = 0;
-      resetGame();
-    });
+    restartBtn.addEventListener("click", resetGame);
     restartBtn.addEventListener("touchend", (e) => {
       e.preventDefault();
-      score = 0;
       resetGame();
     });
 
@@ -568,13 +607,46 @@
       player.update();
       player.draw();
 
+      // 10 Second Speed Boost Alert Check
+      const elapsed = (Date.now() - gameStartTime) / 1000;
+      if (elapsed > 10 && !speedAlertTriggered) {
+        speedAlertTriggered = true;
+        speedAlert.classList.add("show");
+        playSound(850, 0.4, "sawtooth");
+        setTimeout(() => speedAlert.classList.remove("show"), 1500);
+      }
+
       lasers.forEach((laser, index) => {
         laser.update();
         laser.draw();
         if (laser.y < 0) lasers.splice(index, 1);
       });
 
-      const spawnRate = Math.max(16, 65 - Math.floor(level * 0.06));
+      // Surprise Coins Movement & Collection
+      surpriseCoins.forEach((coin, cIndex) => {
+        coin.update();
+        coin.draw();
+
+        // Player Coin Touch Collision
+        const distToPlayer = Math.hypot(
+          player.x + player.width / 2 - coin.x,
+          player.y + player.height / 2 - coin.y
+        );
+        if (distToPlayer < coin.radius + player.width / 2) {
+          playCoinSound();
+          coins += 1;
+          coinsVal.innerText = coins;
+          score += 50;
+          scoreVal.innerText = score;
+          surpriseCoins.splice(cIndex, 1);
+        }
+
+        if (coin.y > canvas.height) surpriseCoins.splice(cIndex, 1);
+      });
+
+      // 10 second ke baad spawn rate bhi fast
+      const rateBase = elapsed > 10 ? 32 : 55;
+      const spawnRate = Math.max(15, rateBase - Math.floor(level * 0.05));
       if (frames % spawnRate === 0) {
         enemies.push(new Enemy());
       }
@@ -596,6 +668,12 @@
           const dist = Math.hypot(laser.x - enemy.x, laser.y - enemy.y);
           if (dist < enemy.radius + laser.radius) {
             triggerExplosion(enemy.x, enemy.y, enemy.color);
+
+            // 40% Chance to drop Golden Surprise Coin
+            if (Math.random() < 0.4) {
+              surpriseCoins.push(new SurpriseCoin(enemy.x, enemy.y));
+            }
+
             enemies.splice(eIndex, 1);
             lasers.splice(lIndex, 1);
             score += 10;
@@ -609,17 +687,4 @@
         }
       });
 
-      particles.forEach((p, index) => {
-        if (p.alpha <= 0) {
-          particles.splice(index, 1);
-        } else {
-          p.update();
-          p.draw();
-        }
-      });
-    }
-
-    animate();
-  </script>
-</body>
-</html>
+      par
